@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>دسته‌بندی: {{ category.name }}</h2>
+    {% if category.description %}
+        <p>{{ category.description }}</p>
+    {% endif %}
+</div>
+
+<div class="book-grid">
+    {% for book in books %}
+    <div class="book-card">
+        <div class="book-image">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+            {% else %}
+                <div class="no-image">بدون تصویر</div>
+            {% endif %}
+        </div>
+        
+        <div class="book-info">
+            <h3>{{ book.title }}</h3>
+            <p class="author">نویسنده: {{ book.author }}</p>
+            
+            <div class="rating">
+                <span class="stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= book.average_rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <span class="rating-number">({{ book.average_rating }})</span>
+            </div>
+            
+            <p class="price">{{ book.price|floatformat:0 }} تومان</p>
+            
+            <div class="book-meta">
+                <span>{{ book.review_count }} نظر</span>
+                <span>موجودی: {{ book.stock }}</span>
+            </div>
+            
+            <a href="{% url 'books:book_detail' book.pk %}" class="btn">مشاهده جزئیات</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-results">
+        <h3>کتابی در این دسته وجود ندارد</h3>
+        <a href="{% url 'books:book_list' %}" class="btn">بازگشت به لیست کتاب‌ها</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% if books.has_other_pages %}
+<div class="pagination">
+    {% if books.has_previous %}
+        <a href="?page=1">اولین</a>
+        <a href="?page={{ books.previous_page_number }}">قبلی</a>
+    {% endif %}
+    
+    <span class="current">صفحه {{ books.number }} از {{ books.paginator.num_pages }}</span>
+    
+    {% if books.has_next %}
+        <a href="?page={{ books.next_page_number }}">بعدی</a>
+        <a href="?page={{ books.paginator.num_pages }}">آخرین</a>
+    {% endif %}
+</div>
+{% endif %}
+
+<a href="{% url 'books:book_list' %}" class="back-link">بازگشت به لیست کتاب‌ها</a>
+{% endblock %}

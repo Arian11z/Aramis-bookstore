@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="book-detail">
+    <div class="book-header">
+        <div class="book-cover">
+            {% if book.cover_image %}
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+            {% else %}
+            <div class="no-image-large"></div>
+            {% endif %}
+        </div>
+        <div class="book-main-info">
+            <h2>{{ book.title }}</h2>
+            <p class="author">نویسنده: <strong>{{ book.author }}</strong></p>
+            <div class="rating-large">
+                <span class="stars">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= book.average_rating %} ★ {% else %} ☆ {% endif %} {% endfor %} </span>
+                        <span class="rating-number">{{ book.average_rating }} از 5</span>
+                        <span class="review-count">({{ book.review_count }} نظر)</span>
+            </div>
+            <p class="price-large">{{ book.price|floatformat:0 }} تومان</p>
+            
+            <!-- ================= START: کد تغییر یافته ================= -->
+            <div class="book-specs">
+                <div class="spec">
+                    <span class="label"> تعداد صفحات:</span>
+                    <span class="value">{{ book.pages }}</span>
+                </div>
+                <div class="spec">
+                    <span class="label"> تاریخ انتشار:</span>
+                    <span class="value">{{ book.publication_date }}</span>
+                </div>
+                <div class="spec">
+                    <span class="label"> شابک:</span>
+                    <span class="value">{{ book.isbn }}</span>
+                </div>
+                <div class="spec">
+                    <span class="label"> موجودی:</span>
+                    <span class="value">{{ book.stock }} عدد</span>
+                </div>
+            </div>
+
+            <!-- دکمه به اینجا منتقل شد (زیر بخش مشخصات) -->
+            <div class="book-actions mt-3">
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'books:add_to_cart' book.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-add-cart">افزودن به سبد خرید</button>
+                </form>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn btn-add-cart">برای خرید وارد شوید</a>
+                {% endif %}
+            </div>
+            <!-- ================== END: کد تغییر یافته ================== -->
+
+        </div>
+    </div>
+
+    <div class="book-description">
+        <h3> درباره کتاب</h3>
+        <p>{{ book.description }}</p>
+    </div>
+
+    <div class="rating-form-section">
+        <h3> امتیاز دهید</h3>
+        {% if user.is_authenticated %}
+        {% if user_rating %}
+        <p class="info-text"> شما قبلاً امتیاز <strong>{{ user_rating.score }}</strong> ستاره به این کتاب داده‌اید.
+            می‌توانید آن را تغییر دهید:</p>
+        {% else %}
+        <p class="info-text">به این کتاب امتیاز دهید:</p>
+        {% endif %}
+        <form method="post" action="{% url 'books:add_rating' book.pk %}" class="rating-form">
+            {% csrf_token %}
+            <div class="radio-group">
+                {% for choice in rating_form.score %}
+                {{ choice }}
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-submit">ثبت امتیاز</button>
+        </form>
+        {% else %}
+        <p class="login-prompt">برای امتیازدهی لطفاً <a href="{% url 'accounts:login' %}">وارد شوید</a></p>
+        {% endif %}
+    </div>
+
+    <div class="review-form-section">
+        <h3> نظر خود را بنویسید</h3>
+        {% if user.is_authenticated %}
+        {% if user_review %}
+        <div class="user-review-exists">
+            <p class="info-text"> نظر شما قبلاً ثبت شده است:</p>
+            <div class="review-card my-review">
+                <div class="review-header">
+                    <span class="user-icon"></span>
+                    <strong>{{ user.username }}</strong>
+                    <span class="review-date">{{ user_review.created_at|date:"Y/m/d" }}</span>
+                </div>
+                <p class="review-text">{{ user_review.comment }}</p>
+            </div>
+        </div>
+        {% else %}
+        <form method="post" action="{% url 'books:add_review' book.pk %}" class="review-form">
+            {% csrf_token %}
+            {{ review_form.comment }}
+            <button type="submit" class="btn btn-submit">ثبت نظر</button>
+        </form>
+        {% endif %}
+        {% else %}
+        <p class="login-prompt">برای ثبت نظر لطفاً <a href="{% url 'accounts:login' %}">وارد شوید</a></p>
+        {% endif %}
+    </div>
+
+    <div class="reviews-section">
+        <h3>نظرات کاربران ({{ reviews.count }})</h3>
+        {% if reviews %}
+        {% for review in reviews %}
+        <div class="review-card">
+            <div class="review-header">
+                <span class="user-icon"></span>
+                <strong>{{ review.user.username }}</strong>
+                <span class="review-date">{{ review.created_at|date:"Y/m/d" }}</span>
+                {% with sentiment_data=review.get_sentiment %}
+                <span class="sentiment-badge sentiment-{{ sentiment_data.sentiment }}">
+                    {{ sentiment_data.label }}
+                </span>
+                {% endwith %}
+            </div>
+            <p class="review-text">{{ review.comment }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="no-reviews">هنوز نظری ثبت نشده است. اولین نفر باشید!</p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{% url 'books:book_list' %}" class="back-link">← بازگشت به لیست کتاب‌ها</a>
+
+{% endblock %}

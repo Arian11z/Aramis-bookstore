@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}داشبورد ادمین{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <h2 class="text-center mb-4">داشبورد مدیریت</h2>
+            
+            <div class="alert alert-success">
+                سلام <strong>{{ user.username }}</strong>، به پنل مدیریت فروشگاه خوش آمدید!
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">پنل اصلی جنگو</h5>
+                            <p class="card-text">برای مدیریت کامل داده‌ها (افزودن کتاب، مدیریت کاربران و...)</p>
+                            <a href="{% url 'admin:index' %}" class="btn btn-primary" target="_blank">رفتن به پنل اصلی</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">آمار و گزارشات</h5>
+                            <p class="card-text">به زودی در این بخش آمار فروش و بازدید قرار خواهد گرفت.</p>
+                            <a href="#" class="btn btn-secondary disabled">مشاهده گزارشات</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

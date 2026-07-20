@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}ثبت‌نام{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h2> ثبت‌نام</h2>
+        <p class="auth-subtitle">حساب کاربری جدید بسازید</p>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label> نام کاربری</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <span class="error">{{ form.username.errors.0 }}</span>
+                {% endif %}
+                {% if form.username.help_text %}
+                    <span class="help-text">{{ form.username.help_text }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label>📧 ایمیل</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <span class="error">{{ form.email.errors.0 }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label> رمز عبور</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <span class="error">{{ form.password1.errors.0 }}</span>
+                {% endif %}
+                {% if form.password1.help_text %}
+                    <span class="help-text">{{ form.password1.help_text }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label> تکرار رمز عبور</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <span class="error">{{ form.password2.errors.0 }}</span>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-auth">ثبت‌نام</button>
+        </form>
+        
+        <div class="auth-footer">
+            قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'accounts:login' %}">وارد شوید</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

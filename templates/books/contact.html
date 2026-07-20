@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}ارتباط با ما{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="contact-container">
+    <div class="contact-header">
+        <h2>ارتباط با ما</h2>
+        <p class="contact-subtitle">خوشحال می‌شویم نظرات و پیشنهادات شما را بشنویم</p>
+    </div>
+
+    <div class="contact-content">
+        <div class="contact-info">
+            <h3>اطلاعات تماس</h3>
+            
+            <div class="contact-item">
+                <div class="contact-icon">📍</div>
+                <div class="contact-details">
+                    <h4>آدرس</h4>
+                    <p>اصفهان، نجف آباد، پلاک 123</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">📞</div>
+                <div class="contact-details">
+                    <h4>تلفن</h4>
+                    <p>021-12345678</p>
+                    <p>0912-3456789</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">📧</div>
+                <div class="contact-details">
+                    <h4>ایمیل</h4>
+                    <p>info@bookstore.ir</p>
+                    <p>support@bookstore.ir</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">🕐</div>
+                <div class="contact-details">
+                    <h4>ساعات کاری</h4>
+                    <p>شنبه تا پنجشنبه: 9:00 - 18:00</p>
+                    <p>جمعه: تعطیل</p>
+                </div>
+            </div>
+
+            <div class="social-links">
+                <h4>شبکه‌های اجتماعی</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">اینستاگرام</a>
+                    <a href="#" class="social-icon">تلگرام</a>
+                    <a href="#" class="social-icon">توییتر</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form-wrapper">
+            <h3>فرم تماس</h3>
+            <form method="post" class="contact-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>نام و نام خانوادگی</label>
+                    <input type="text" name="name" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label>ایمیل</label>
+                    <input type="email" name="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label>موضوع</label>
+                    <input type="text" name="subject" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label>پیام</label>
+                    <textarea name="message" class="form-textarea" rows="6" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-submit-contact">ارسال پیام</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

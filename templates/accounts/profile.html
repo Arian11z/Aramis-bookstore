@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}پروفایل کاربری{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <span class="avatar-text">{{ user.username|slice:":1"|upper }}</span>
+        </div>
+        <div class="profile-info">
+            <h2>{{ user.username }}</h2>
+            <p>{{ user.email }}</p>
+            <p class="join-date">عضو از: {{ user.date_joined|date:"Y/m/d" }}</p>
+        </div>
+    </div>
+
+    <div class="profile-stats">
+        <div class="stat-card">
+            <h3>{{ user_reviews.count }}</h3>
+            <p>نظرات ثبت شده</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ user_ratings.count }}</h3>
+            <p>امتیازهای داده شده</p>
+        </div>
+    </div>
+
+    <div class="profile-section">
+        <h3>نظرات من</h3>
+        {% if user_reviews %}
+            <div class="reviews-list">
+                {% for review in user_reviews %}
+                <div class="profile-review-card">
+                    <div class="review-book-info">
+                        <h4>{{ review.book.title }}</h4>
+                        <p class="review-author">{{ review.book.author }}</p>
+                    </div>
+                    <p class="review-comment">{{ review.comment }}</p>
+                    <div class="review-meta">
+                        <span>{{ review.created_at|date:"Y/m/d" }}</span>
+                        <a href="{% url 'books:book_detail' review.book.pk %}" class="btn-small">مشاهده کتاب</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">شما هنوز نظری ثبت نکرده‌اید.</p>
+        {% endif %}
+    </div>
+
+    <div class="profile-section">
+        <h3>امتیازهای من</h3>
+        {% if user_ratings %}
+            <div class="ratings-list">
+                {% for rating in user_ratings %}
+                <div class="profile-rating-card">
+                    <div class="rating-book-info">
+                        <h4>{{ rating.book.title }}</h4>
+                        <p class="rating-author">{{ rating.book.author }}</p>
+                    </div>
+                    <div class="rating-score">
+                        <span class="stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= rating.score %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <div class="rating-meta">
+                        <span>{{ rating.created_at|date:"Y/m/d" }}</span>
+                        <a href="{% url 'books:book_detail' rating.book.pk %}" class="btn-small">مشاهده کتاب</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">شما هنوز امتیازی نداده‌اید.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
